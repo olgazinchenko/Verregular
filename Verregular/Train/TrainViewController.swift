@@ -13,6 +13,7 @@ final class TrainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Train verbs".localized
         view.backgroundColor = .yellow
     }
 }
