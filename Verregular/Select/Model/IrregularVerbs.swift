@@ -23,22 +23,6 @@ final class IrregularVerbs {
             Verb(infinitive: "blow", pastSimple: "blew", participle: "blown"),
             Verb(infinitive: "drow", pastSimple: "drew", participle: "drown"),
             Verb(infinitive: "eat", pastSimple: "ate", participle: "eaten"),
-            Verb(infinitive: "fall", pastSimple: "fell", participle: "fallen"),
-            Verb(infinitive: "blow", pastSimple: "blew", participle: "blown"),
-            Verb(infinitive: "drow", pastSimple: "drew", participle: "drown"),
-            Verb(infinitive: "eat", pastSimple: "ate", participle: "eaten"),
-            Verb(infinitive: "fall", pastSimple: "fell", participle: "fallen"),
-            Verb(infinitive: "blow", pastSimple: "blew", participle: "blown"),
-            Verb(infinitive: "drow", pastSimple: "drew", participle: "drown"),
-            Verb(infinitive: "eat", pastSimple: "ate", participle: "eaten"),
-            Verb(infinitive: "fall", pastSimple: "fell", participle: "fallen"),
-            Verb(infinitive: "blow", pastSimple: "blew", participle: "blown"),
-            Verb(infinitive: "drow", pastSimple: "drew", participle: "drown"),
-            Verb(infinitive: "eat", pastSimple: "ate", participle: "eaten"),
-            Verb(infinitive: "fall", pastSimple: "fell", participle: "fallen"),
-            Verb(infinitive: "blow", pastSimple: "blew", participle: "blown"),
-            Verb(infinitive: "drow", pastSimple: "drew", participle: "drown"),
-            Verb(infinitive: "eat", pastSimple: "ate", participle: "eaten"),
             Verb(infinitive: "fall", pastSimple: "fell", participle: "fallen")
         ]
     }
