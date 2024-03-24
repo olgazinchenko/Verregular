@@ -87,6 +87,7 @@ final class TrainViewController: UIViewController {
         guard dataSource.count > count else { return nil }
         return dataSource[count]
     }
+    
     private var count = 0 {
         didSet {
             infinitiveLabel.text = currentVerb?.infinitive
@@ -94,6 +95,9 @@ final class TrainViewController: UIViewController {
             participleTextField.text = ""
         }
     }
+    
+    private var score = 0
+    
     private let edgeInsets = 30
     private let dataSource = IrregularVerbs.shared.selectedVerbs
     
@@ -125,6 +129,7 @@ final class TrainViewController: UIViewController {
     @objc
     private func checkAction() {
         if checkAnswer() {
+            scoreCount()
             if currentVerb?.infinitive == dataSource.last?.infinitive {
                 navigationController?.popViewController(animated: true)
             } else {
@@ -140,6 +145,10 @@ final class TrainViewController: UIViewController {
     private func checkAnswer() -> Bool {
         pastSimpleTextField.text?.lowercased() == currentVerb?.pastSimple.lowercased() &&
         participleTextField.text?.lowercased() == currentVerb?.participle.lowercased()
+    }
+    
+    private func scoreCount() {
+        score += 1
     }
     
     private func setupUI() {
