@@ -60,6 +60,16 @@ final class TrainViewController: UIViewController {
         return label
     }()
     
+    private lazy var currentVerbCountLabel: UILabel = {
+        let label = UILabel()
+        
+        label.textColor = .gray
+        label.font = .systemFont(ofSize: 14)
+        label.text = "\(count + 1)/\(dataSource.count)"
+        
+        return label
+    }()
+    
     private lazy var pastSimpleTextField: UITextField = {
         let field = UITextField()
         
@@ -100,7 +110,8 @@ final class TrainViewController: UIViewController {
     
     private var count = 0 {
         didSet {
-            infinitiveLabel.text = currentVerb?.infinitive
+            infinitiveLabel.text = currentVerb?.infinitive.uppercased()
+            currentVerbCountLabel.text = "\(count + 1)/\(dataSource.count)"
             pastSimpleTextField.text = ""
             participleTextField.text = ""
         }
@@ -124,7 +135,7 @@ final class TrainViewController: UIViewController {
         setupUI()
         hideKeyboardWhenTappedAround()
         
-        infinitiveLabel.text = dataSource.first?.infinitive
+        infinitiveLabel.text = dataSource.first?.infinitive.uppercased()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -171,6 +182,7 @@ final class TrainViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubviews([scoreLabel,
+                                 currentVerbCountLabel,
                                  infinitiveLabel,
                                  pastSimpleLabel,
                                  pastSimpleTextField,
@@ -193,6 +205,11 @@ final class TrainViewController: UIViewController {
         scoreLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(edgeInsets)
             make.trailing.equalToSuperview().inset(edgeInsets)
+        }
+        
+        currentVerbCountLabel.snp.makeConstraints { make in
+            make.top.equalTo(infinitiveLabel.snp.bottom).offset(10)
+            make.centerX.equalTo(infinitiveLabel.snp.centerX)
         }
         
         infinitiveLabel.snp.makeConstraints { make in
