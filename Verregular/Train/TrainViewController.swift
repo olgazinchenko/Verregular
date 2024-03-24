@@ -50,6 +50,16 @@ final class TrainViewController: UIViewController {
         return label
     }()
     
+    private lazy var scoreLabel: UILabel = {
+        let label = UILabel()
+        
+        label.textColor = .gray
+        label.font = .systemFont(ofSize: 14)
+        label.text = "Score: 0"
+        
+        return label
+    }()
+    
     private lazy var pastSimpleTextField: UITextField = {
         let field = UITextField()
         
@@ -96,7 +106,11 @@ final class TrainViewController: UIViewController {
         }
     }
     
-    private var score = 0
+    private var score = 0 {
+        didSet {
+            scoreLabel.text = "Score: \(score)"
+        }
+    }
     
     private let edgeInsets = 30
     private let dataSource = IrregularVerbs.shared.selectedVerbs
@@ -156,7 +170,8 @@ final class TrainViewController: UIViewController {
         
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubviews([infinitiveLabel,
+        contentView.addSubviews([scoreLabel,
+                                 infinitiveLabel,
                                  pastSimpleLabel,
                                  pastSimpleTextField,
                                  participleLabel,
@@ -173,6 +188,11 @@ final class TrainViewController: UIViewController {
         
         contentView.snp.makeConstraints { make in
             make.size.edges.equalToSuperview()
+        }
+        
+        scoreLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(edgeInsets)
+            make.trailing.equalToSuperview().inset(edgeInsets)
         }
         
         infinitiveLabel.snp.makeConstraints { make in
