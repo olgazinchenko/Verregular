@@ -114,12 +114,25 @@ final class TrainViewController: UIViewController {
             currentVerbCountLabel.text = "\(count + 1)/\(dataSource.count)"
             pastSimpleTextField.text = ""
             participleTextField.text = ""
+            tapCount = 0
         }
     }
     
     private var score = 0 {
         didSet {
             scoreLabel.text = "Score: \(score)"
+        }
+    }
+    
+    var isFirstAttempt: Bool = true
+    
+    var tapCount: Int = 0 {
+        didSet {
+            if tapCount > 1 {
+                isFirstAttempt = false
+            } else {
+                isFirstAttempt = true
+            }
         }
     }
     
@@ -153,6 +166,7 @@ final class TrainViewController: UIViewController {
     // MARK: - Private Methods
     @objc
     private func checkAction() {
+        tapCount += 1
         if checkAnswer() {
             scoreCount()
             if currentVerb?.infinitive == dataSource.last?.infinitive {
@@ -171,9 +185,11 @@ final class TrainViewController: UIViewController {
         pastSimpleTextField.text?.lowercased() == currentVerb?.pastSimple.lowercased() &&
         participleTextField.text?.lowercased() == currentVerb?.participle.lowercased()
     }
-    
+
     private func scoreCount() {
-        score += 1
+        if isFirstAttempt {
+            score += 1
+        }
     }
     
     private func setupUI() {
