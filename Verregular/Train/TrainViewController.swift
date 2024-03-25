@@ -176,6 +176,7 @@ final class TrainViewController: UIViewController {
             } else {
                 count += 1
             }
+            showFinalScore()
         } else {
             checkButton.backgroundColor = .red
             checkButton.setTitle("Try again".localized,
@@ -191,6 +192,14 @@ final class TrainViewController: UIViewController {
     private func scoreCount() {
         if isFirstAttempt {
             score += 1
+        }
+    }
+    
+    private func showFinalScore() {
+        if count + 1 == dataSource.count  {
+            let alert = UIAlertController(title: "Train is finished", message: "Score: \(score)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK".localized, style: .default))
+            self.present(alert, animated: true)
         }
     }
     
