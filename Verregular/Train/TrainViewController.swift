@@ -102,6 +102,20 @@ final class TrainViewController: UIViewController {
         return button
     }()
     
+    private lazy var skipButton: UIButton = {
+        let button = UIButton()
+        
+        button.layer.cornerRadius = 10
+        button.backgroundColor = .systemGray5
+        button.setTitle("Skip".localized, for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.addTarget(self,
+                         action: #selector(skipAction),
+                         for: .touchUpInside)
+        
+        return button
+    }()
+    
     // MARK: - Properties
     private var currentVerb: Verb? {
         guard dataSource.count > count else { return nil }
@@ -173,15 +187,35 @@ final class TrainViewController: UIViewController {
             scoreCount()
             if currentVerb?.infinitive == dataSource.last?.infinitive {
                 navigationController?.popViewController(animated: true)
+                showFinalScore()
             } else {
                 count += 1
             }
-            showFinalScore()
         } else {
             checkButton.backgroundColor = .red
             checkButton.setTitle("Try again".localized,
                                  for: .normal)
         }
+    }
+    
+    @objc
+    private func skipAction() {
+        let alert = UIAlertController(title: "Tip",
+                                      message: "\(currentVerb?.pastSimple ?? ""), \(currentVerb?.participle ?? "")",
+                                      preferredStyle: .alert)
+        let handler: ((UIAlertAction) -> Void)? = { _ in
+            if self.count + 1 != self.dataSource.count {
+                self.count += 1
+            } else {
+                self.navigationController?.popViewController(animated: true)
+                self.showFinalScore()
+            }
+        }
+        let action = UIAlertAction(title: "OK".localized,
+                                   style: .default,
+                                   handler: handler)
+        alert.addAction(action)
+        self.present(alert, animated: true)
     }
     
     private func checkAnswer() -> Bool {
@@ -197,7 +231,7 @@ final class TrainViewController: UIViewController {
     
     private func showFinalScore() {
         if count + 1 == dataSource.count  {
-            let alert = UIAlertController(title: "Train is finished", message: "Score: \(score)", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Finished", message: "Score: \(score)", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK".localized, style: .default))
             self.present(alert, animated: true)
         }
@@ -215,7 +249,8 @@ final class TrainViewController: UIViewController {
                                  pastSimpleTextField,
                                  participleLabel,
                                  participleTextField,
-                                 checkButton])
+                                 checkButton,
+                                 skipButton])
         
         setupConstrains()
     }
@@ -266,6 +301,11 @@ final class TrainViewController: UIViewController {
         
         checkButton.snp.makeConstraints { make in
             make.top.equalTo(participleTextField.snp.bottom).offset(100)
+            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        }
+        
+        skipButton.snp.makeConstraints { make in
+            make.top.equalTo(checkButton.snp.bottom).offset(10)
             make.trailing.leading.equalToSuperview().inset(edgeInsets)
         }
     }
