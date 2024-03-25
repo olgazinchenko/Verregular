@@ -114,6 +114,8 @@ final class TrainViewController: UIViewController {
             currentVerbCountLabel.text = "\(count + 1)/\(dataSource.count)"
             pastSimpleTextField.text = ""
             participleTextField.text = ""
+            checkButton.setTitle("Check".localized, for: .normal)
+            checkButton.backgroundColor = .systemGray5
             tapCount = 0
         }
     }
