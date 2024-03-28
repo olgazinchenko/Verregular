@@ -12,7 +12,6 @@ final class IrregularVerbs {
     static var shared = IrregularVerbs()
     private init() {
         configureVerbs()
-        selectedVerbs = verbs
     }
     // MARK: - Properties
     var selectedVerbs: [Verb] = []
@@ -26,5 +25,6 @@ final class IrregularVerbs {
             Verb(infinitive: "eat", pastSimple: "ate", participle: "eaten"),
             Verb(infinitive: "fall", pastSimple: "fell", participle: "fallen")
         ]
+        selectedVerbs = verbs
     }
 }

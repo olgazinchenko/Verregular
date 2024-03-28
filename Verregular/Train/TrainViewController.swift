@@ -12,7 +12,6 @@ final class TrainViewController: UIViewController {
     // MARK: - GUI Variables
     private lazy var scrollView: UIScrollView = {
         let view = UIScrollView()
-        
         view.showsHorizontalScrollIndicator = false
         
         return view
@@ -22,7 +21,6 @@ final class TrainViewController: UIViewController {
     
     private lazy var infinitiveLabel: UILabel = {
         let label = UILabel()
-        
         label.font = .boldSystemFont(ofSize: 28)
         label.textColor = .black
         label.textAlignment = .center
@@ -30,9 +28,8 @@ final class TrainViewController: UIViewController {
         return label
     }()
     
-    private lazy var pastSimpleLabel: UILabel = {
+    private let pastSimpleLabel: UILabel = {
         let label = UILabel()
-        
         label.textColor = .gray
         label.font = .systemFont(ofSize: 14)
         label.text = "Past Simple"
@@ -40,9 +37,8 @@ final class TrainViewController: UIViewController {
         return label
     }()
     
-    private lazy var participleLabel: UILabel = {
+    private let participleLabel: UILabel = {
         let label = UILabel()
-        
         label.textColor = .gray
         label.font = .systemFont(ofSize: 14)
         label.text = "Past Participle"
@@ -52,7 +48,6 @@ final class TrainViewController: UIViewController {
     
     private lazy var scoreLabel: UILabel = {
         let label = UILabel()
-        
         label.textColor = .gray
         label.font = .systemFont(ofSize: 14)
         label.text = "Score: 0"
@@ -62,7 +57,6 @@ final class TrainViewController: UIViewController {
     
     private lazy var currentVerbCountLabel: UILabel = {
         let label = UILabel()
-        
         label.textColor = .gray
         label.font = .systemFont(ofSize: 14)
         label.text = "\(count + 1)/\(dataSource.count)"
@@ -72,7 +66,6 @@ final class TrainViewController: UIViewController {
     
     private lazy var pastSimpleTextField: UITextField = {
         let field = UITextField()
-        
         field.borderStyle = .roundedRect
         field.delegate = self
         
@@ -81,7 +74,6 @@ final class TrainViewController: UIViewController {
     
     private lazy var participleTextField: UITextField = {
         let field = UITextField()
-        
         field.borderStyle = .roundedRect
         field.delegate = self
         
@@ -90,7 +82,6 @@ final class TrainViewController: UIViewController {
     
     private lazy var checkButton: UIButton = {
         let button = UIButton()
-        
         button.layer.cornerRadius = 10
         button.backgroundColor = .systemGray5
         button.setTitle("Check".localized, for: .normal)
@@ -104,7 +95,6 @@ final class TrainViewController: UIViewController {
     
     private lazy var skipButton: UIButton = {
         let button = UIButton()
-        
         button.layer.cornerRadius = 10
         button.backgroundColor = .systemGray5
         button.setTitle("Skip".localized, for: .normal)
@@ -124,13 +114,7 @@ final class TrainViewController: UIViewController {
     
     private var count = 0 {
         didSet {
-            infinitiveLabel.text = currentVerb?.infinitive.uppercased()
-            currentVerbCountLabel.text = "\(count + 1)/\(dataSource.count)"
-            pastSimpleTextField.text = ""
-            participleTextField.text = ""
-            checkButton.setTitle("Check".localized, for: .normal)
-            checkButton.backgroundColor = .systemGray5
-            tapCount = 0
+            updateUI()
         }
     }
     
@@ -144,11 +128,7 @@ final class TrainViewController: UIViewController {
     
     var tapCount: Int = 0 {
         didSet {
-            if tapCount > 1 {
-                isFirstAttempt = false
-            } else {
-                isFirstAttempt = true
-            }
+            tapCount > 1 ? (isFirstAttempt = false) : (isFirstAttempt = true)
         }
     }
     
@@ -186,8 +166,7 @@ final class TrainViewController: UIViewController {
         if checkAnswer() {
             scoreCount()
             if currentVerb?.infinitive == dataSource.last?.infinitive {
-                navigationController?.popViewController(animated: true)
-                showFinalScore()
+                closeTrainScreen()
             } else {
                 count += 1
             }
@@ -200,22 +179,9 @@ final class TrainViewController: UIViewController {
     
     @objc
     private func skipAction() {
-        let alert = UIAlertController(title: "Tip",
-                                      message: "\(currentVerb?.pastSimple ?? ""), \(currentVerb?.participle ?? "")",
-                                      preferredStyle: .alert)
-        let handler: ((UIAlertAction) -> Void)? = { _ in
-            if self.count + 1 != self.dataSource.count {
-                self.count += 1
-            } else {
-                self.navigationController?.popViewController(animated: true)
-                self.showFinalScore()
-            }
-        }
-        let action = UIAlertAction(title: "OK".localized,
-                                   style: .default,
-                                   handler: handler)
-        alert.addAction(action)
-        self.present(alert, animated: true)
+        (count + 1 != dataSource.count) ? (count += 1) : closeTrainScreen()
+        showAlertWith(title: "Tip", 
+                      message: "\(currentVerb?.pastSimple ?? ""), \(currentVerb?.participle ?? "")")
     }
     
     private func checkAnswer() -> Bool {
@@ -229,11 +195,15 @@ final class TrainViewController: UIViewController {
         }
     }
     
+    private func showAlertWith(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK".localized, style: .default))
+        self.present(alert, animated: true)
+    }
+    
     private func showFinalScore() {
         if count + 1 == dataSource.count  {
-            let alert = UIAlertController(title: "Finished", message: "Score: \(score)", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK".localized, style: .default))
-            self.present(alert, animated: true)
+            showAlertWith(title: "Finished", message: "Score: \(score)")
         }
     }
     
@@ -255,58 +225,73 @@ final class TrainViewController: UIViewController {
         setupConstrains()
     }
     
+    private func updateUI() {
+        infinitiveLabel.text = currentVerb?.infinitive.uppercased()
+        currentVerbCountLabel.text = "\(count + 1)/\(dataSource.count)"
+        pastSimpleTextField.text = ""
+        participleTextField.text = ""
+        checkButton.setTitle("Check".localized, for: .normal)
+        checkButton.backgroundColor = .systemGray5
+        tapCount = 0
+    }
+    
+    private func closeTrainScreen() {
+        navigationController?.popViewController(animated: true)
+        showFinalScore()
+    }
+    
     private func setupConstrains() {
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
         
-        contentView.snp.makeConstraints { make in
-            make.size.edges.equalToSuperview()
+        contentView.snp.makeConstraints {
+            $0.size.edges.equalToSuperview()
         }
         
-        scoreLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(edgeInsets)
-            make.trailing.equalToSuperview().inset(edgeInsets)
+        scoreLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(edgeInsets)
+            $0.trailing.equalToSuperview().inset(edgeInsets)
         }
         
-        currentVerbCountLabel.snp.makeConstraints { make in
-            make.top.equalTo(infinitiveLabel.snp.bottom).offset(10)
-            make.centerX.equalTo(infinitiveLabel.snp.centerX)
+        currentVerbCountLabel.snp.makeConstraints {
+            $0.top.equalTo(infinitiveLabel.snp.bottom).offset(10)
+            $0.centerX.equalTo(infinitiveLabel.snp.centerX)
         }
         
-        infinitiveLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(200)
-            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        infinitiveLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(200)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(edgeInsets)
         }
         
-        pastSimpleLabel.snp.makeConstraints { make in
-            make.top.equalTo(infinitiveLabel.snp.bottom).offset(60)
-            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        pastSimpleLabel.snp.makeConstraints {
+            $0.top.equalTo(infinitiveLabel.snp.bottom).offset(60)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(edgeInsets)
         }
         
-        pastSimpleTextField.snp.makeConstraints { make in
-            make.top.equalTo(pastSimpleLabel.snp.bottom).offset(10)
-            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        pastSimpleTextField.snp.makeConstraints {
+            $0.top.equalTo(pastSimpleLabel.snp.bottom).offset(10)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(edgeInsets)
         }
         
-        participleLabel.snp.makeConstraints { make in
-            make.top.equalTo(pastSimpleTextField.snp.bottom).offset(20)
-            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        participleLabel.snp.makeConstraints {
+            $0.top.equalTo(pastSimpleTextField.snp.bottom).offset(20)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(edgeInsets)
         }
         
-        participleTextField.snp.makeConstraints { make in
-            make.top.equalTo(participleLabel.snp.bottom).offset(10)
-            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        participleTextField.snp.makeConstraints {
+            $0.top.equalTo(participleLabel.snp.bottom).offset(10)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(edgeInsets)
         }
         
-        checkButton.snp.makeConstraints { make in
-            make.top.equalTo(participleTextField.snp.bottom).offset(100)
-            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        checkButton.snp.makeConstraints {
+            $0.top.equalTo(participleTextField.snp.bottom).offset(100)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(edgeInsets)
         }
         
-        skipButton.snp.makeConstraints { make in
-            make.top.equalTo(checkButton.snp.bottom).offset(10)
-            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        skipButton.snp.makeConstraints {
+            $0.top.equalTo(checkButton.snp.bottom).offset(10)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(edgeInsets)
         }
     }
 }
