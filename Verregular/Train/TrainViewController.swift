@@ -10,7 +10,7 @@ import SnapKit
 
 final class TrainViewController: UIViewController {
     // MARK: - GUI Variables
-    private lazy var scrollView: UIScrollView = {
+    private let scrollView: UIScrollView = {
         let view = UIScrollView()
         view.showsHorizontalScrollIndicator = false
         
@@ -19,7 +19,7 @@ final class TrainViewController: UIViewController {
     
     private lazy var contentView: UIView = UIView()
     
-    private lazy var infinitiveLabel: UILabel = {
+    private let infinitiveLabel: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 28)
         label.textColor = .black
@@ -46,7 +46,7 @@ final class TrainViewController: UIViewController {
         return label
     }()
     
-    private lazy var scoreLabel: UILabel = {
+    private let scoreLabel: UILabel = {
         let label = UILabel()
         label.textColor = .gray
         label.font = .systemFont(ofSize: 14)
@@ -64,18 +64,16 @@ final class TrainViewController: UIViewController {
         return label
     }()
     
-    private lazy var pastSimpleTextField: UITextField = {
+    private let pastSimpleTextField: UITextField = {
         let field = UITextField()
         field.borderStyle = .roundedRect
-        field.delegate = self
         
         return field
     }()
     
-    private lazy var participleTextField: UITextField = {
+    private let participleTextField: UITextField = {
         let field = UITextField()
         field.borderStyle = .roundedRect
-        field.delegate = self
         
         return field
     }()
@@ -128,7 +126,7 @@ final class TrainViewController: UIViewController {
     
     var tapCount: Int = 0 {
         didSet {
-            tapCount > 1 ? (isFirstAttempt = false) : (isFirstAttempt = true)
+            isFirstAttempt = tapCount > 1 ? false : true
         }
     }
     
@@ -230,6 +228,8 @@ final class TrainViewController: UIViewController {
         currentVerbCountLabel.text = "\(count + 1)/\(dataSource.count)"
         pastSimpleTextField.text = ""
         participleTextField.text = ""
+        pastSimpleTextField.delegate = self
+        participleTextField.delegate = self
         checkButton.setTitle("Check".localized, for: .normal)
         checkButton.backgroundColor = .systemGray5
         tapCount = 0
